@@ -3,6 +3,7 @@
 import { Check, Copy, Share2, Twitter } from "lucide-react";
 import { useEffect, useState } from "react";
 import AdBanner from "@/components/AdBanner";
+import { Analytics } from "@vercel/analytics/next";
 
 export default function Page() {
   const [timestamp, setTimestamp] = useState<number | null>(null);
