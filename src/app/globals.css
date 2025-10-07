@@ -1,9 +1,12 @@
 @import "tailwindcss";
 
-@theme {
-  --color-bg-light: theme(colors.slate.900);
-  --color-bg-dark: theme(colors.slate.800);
-  --color-card-light: theme(colors.white);
+:root {
+  /* Slate 900 and 800 for dark gradient */
+  --color-bg-light: #0f172a;
+  --color-bg-dark: #1f2937;
+  --color-card-light: #ffffff;
+  --foreground-rgb: 0, 0, 0;
+  --background-rgb: 255, 255, 255;
 }
 
 @layer base {
@@ -59,14 +62,15 @@
 }
 
 @keyframes fade-in {
-  0% { opacity: 0; transform: translateY(10px); }
-  100% { opacity: 1; transform: translateY(0); }
+  0% {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 .animate-fade-in {
   animation: fade-in 0.3s ease-out;
-}
-
-:root {
-  --foreground-rgb: 0, 0, 0;
-  --background-rgb: 255, 255, 255;
 }
