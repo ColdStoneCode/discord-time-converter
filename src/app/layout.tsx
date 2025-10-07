@@ -1,5 +1,6 @@
 import "./globals.css";
 import type { Metadata } from "next";
+import { Analytics } from "@vercel/analytics/react";
 
 const siteUrl = "https://discord-time-converter.vercel.app/";
 
@@ -66,6 +67,7 @@ export default function RootLayout({
       </head>
       <body className="antialiased font-sans transition-colors duration-500 min-h-screen flex flex-col">
         {children}
+        <Analytics />
       </body>
     </html>
   );
