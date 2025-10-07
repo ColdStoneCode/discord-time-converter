@@ -1,12 +1,44 @@
 "use client";
 
 import { Check, Copy, Share2, Twitter } from "lucide-react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import AdBanner from "@/components/AdBanner";
 
 export default function Page() {
   const [timestamp, setTimestamp] = useState<number | null>(null);
   const [copied, setCopied] = useState<string | null>(null);
+
+  useEffect(() => {
+    const jsonLd = {
+      "@context": "https://schema.org",
+      "@type": "WebSite",
+      name: "Discord Time Converter",
+      url: "https://discord-time-converter.vercel.app/",
+      description:
+        "Convert any date/time to Discord’s Unix timestamp format instantly.",
+      potentialAction: {
+        "@type": "SearchAction",
+        target:
+          "https://discord-time-converter.vercel.app/?q={search_term_string}",
+        "query-input": "required name=search_term_string",
+      },
+    };
+    const appLd = {
+      "@context": "https://schema.org",
+      "@type": "WebApplication",
+      name: "Discord Time to Unix Converter",
+      applicationCategory: "UtilitiesApplication",
+      url: "https://discord-time-converter.vercel.app/",
+      operatingSystem: "Web",
+    };
+    const script = document.createElement("script");
+    script.type = "application/ld+json";
+    script.text = JSON.stringify([jsonLd, appLd]);
+    document.head.appendChild(script);
+    return () => {
+      document.head.removeChild(script);
+    };
+  }, []);
 
   const handleCopy = (value: string) => {
     navigator.clipboard.writeText(value);
@@ -78,8 +110,7 @@ export default function Page() {
         if (abs < 60) return rtf.format(Math.round(diff), "second");
         if (abs < 3600) return rtf.format(Math.round(diff / 60), "minute");
         if (abs < 86400) return rtf.format(Math.round(diff / 3600), "hour");
-        if (abs < 2592000)
-          return rtf.format(Math.round(diff / 86400), "day");
+        if (abs < 2592000) return rtf.format(Math.round(diff / 86400), "day");
         if (abs < 31536000)
           return rtf.format(Math.round(diff / 2592000), "month");
         return rtf.format(Math.round(diff / 31536000), "year");
