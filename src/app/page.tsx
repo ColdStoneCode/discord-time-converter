@@ -1,103 +1,191 @@
-import Image from "next/image";
+"use client";
 
-export default function Home() {
+import { useState } from "react";
+import { Copy, Check, Share2, Twitter } from "lucide-react";
+import AdBanner from "@/components/AdBanner";
+
+export default function Page() {
+  const [timestamp, setTimestamp] = useState<number | null>(null);
+  const [copied, setCopied] = useState<string | null>(null);
+
+  const handleCopy = (value: string) => {
+    navigator.clipboard.writeText(value);
+    setCopied(value);
+    setTimeout(() => setCopied(null), 1500);
+  };
+
+  const handleShare = (platform: "twitter" | "discord") => {
+    const shareText = encodeURIComponent(
+      `Convert date/time to Discord timestamps easily! 🕒 ${window.location.href}`
+    );
+    if (platform === "twitter") {
+      window.open(`https://twitter.com/intent/tweet?text=${shareText}`, "_blank");
+    } else if (platform === "discord") {
+      navigator.clipboard.writeText(window.location.href);
+      alert("✅ Link copied! Share it on Discord!");
+    }
+  };
+
+  const handleGenerate = (date: string) => {
+    if (!date) return;
+    const unix = Math.floor(new Date(date).getTime() / 1000);
+    setTimestamp(unix);
+  };
+
+  const formatDiscordPreview = (unix: number, style: string) => {
+    const date = new Date(unix * 1000);
+    switch (style) {
+      case "t":
+        return date.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
+      case "T":
+        return date.toLocaleTimeString();
+      case "d":
+        return date.toLocaleDateString();
+      case "D":
+        return date.toLocaleDateString(undefined, {
+          weekday: "long",
+          year: "numeric",
+          month: "long",
+          day: "numeric",
+        });
+      case "f":
+        return date.toLocaleString(undefined, {
+          year: "numeric",
+          month: "long",
+          day: "numeric",
+          hour: "2-digit",
+          minute: "2-digit",
+        });
+      case "F":
+        return date.toLocaleString(undefined, {
+          weekday: "long",
+          year: "numeric",
+          month: "long",
+          day: "numeric",
+          hour: "2-digit",
+          minute: "2-digit",
+        });
+      case "R": {
+        const diff = (unix * 1000 - Date.now()) / 1000;
+        const abs = Math.abs(diff);
+        const rtf = new Intl.RelativeTimeFormat(undefined, { numeric: "auto" });
+        if (abs < 60) return rtf.format(Math.round(diff), "second");
+        if (abs < 3600) return rtf.format(Math.round(diff / 60), "minute");
+        if (abs < 86400) return rtf.format(Math.round(diff / 3600), "hour");
+        if (abs < 2592000) return rtf.format(Math.round(diff / 86400), "day");
+        if (abs < 31536000) return rtf.format(Math.round(diff / 2592000), "month");
+        return rtf.format(Math.round(diff / 31536000), "year");
+      }
+      default:
+        return "";
+    }
+  };
+
+  const formats = timestamp
+    ? [
+        { label: "Short Time", code: "t" },
+        { label: "Long Time", code: "T" },
+        { label: "Short Date", code: "d" },
+        { label: "Long Date", code: "D" },
+        { label: "Short Date/Time", code: "f" },
+        { label: "Long Date/Time", code: "F" },
+        { label: "Relative Time", code: "R" },
+      ]
+    : [];
+
   return (
-    <div className="font-sans grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20">
-      <main className="flex flex-col gap-[32px] row-start-2 items-center sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol className="font-mono list-inside list-decimal text-sm/6 text-center sm:text-left">
-          <li className="mb-2 tracking-[-.01em]">
-            Get started by editing{" "}
-            <code className="bg-black/[.05] dark:bg-white/[.06] font-mono font-semibold px-1 py-0.5 rounded">
-              src/app/page.tsx
-            </code>
-            .
-          </li>
-          <li className="tracking-[-.01em]">
-            Save and see your changes instantly.
-          </li>
-        </ol>
+    <main className="w-full max-w-3xl mx-auto px-4 py-10">
+      <div className="text-center mb-10">
+        <h1 className="text-3xl font-bold mb-2 bg-gradient-to-r from-blue-500 to-purple-600 text-transparent bg-clip-text">
+          Discord Time to Unix Converter
+        </h1>
+        <p className="text-gray-600">
+          Convert any date/time to all Discord timestamp formats — with live previews.
+        </p>
+      </div>
 
-        <div className="flex gap-4 items-center flex-col sm:flex-row">
-          <a
-            className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:w-auto"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
-            />
-            Deploy now
-          </a>
-          <a
-            className="rounded-full border border-solid border-black/[.08] dark:border-white/[.145] transition-colors flex items-center justify-center hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 w-full sm:w-auto md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Read our docs
-          </a>
+      {/* Input Section */}
+      <div className="bg-slate-800/80 backdrop-blur-lg rounded-2xl shadow-lg p-6 mb-8 border border-slate-700/60">
+        <label className="block text-sm font-medium mb-2 text-slate-200">Select Date & Time:</label>
+        <input
+          type="datetime-local"
+          onChange={(e) => handleGenerate(e.target.value)}
+          className="w-full p-3 rounded-lg bg-slate-700 text-gray-100 border border-slate-600 focus:outline-none focus:ring-2 focus:ring-blue-500"
+        />
+        {timestamp && (
+          <p className="mt-4 text-center text-gray-300">
+            UNIX Timestamp: <span className="font-semibold">{timestamp}</span>
+          </p>
+        )}
+      </div>
+
+      {timestamp && (
+        <div className="mt-6 mb-8">
+          <AdBanner slot="1234567890" />
         </div>
-      </main>
-      <footer className="row-start-3 flex gap-[24px] flex-wrap items-center justify-center">
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
+      )}
+
+      {/* Formats with Live Previews */}
+      {timestamp && (
+        <div className="bg-slate-800/80 backdrop-blur-lg rounded-2xl shadow-lg p-6 space-y-4 border border-slate-700/60">
+          {formats.map(({ label, code }) => {
+            const tag = `<t:${timestamp}:${code}>`;
+            const preview = formatDiscordPreview(timestamp, code);
+            return (
+              <div
+                key={label}
+                className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 border-b border-slate-700/60 pb-3"
+              >
+                <div>
+                  <span className="font-medium text-gray-100">{label}</span>
+                  <div className="text-gray-300 text-sm italic">
+                    {preview || "—"}
+                  </div>
+                </div>
+                <div className="flex items-center gap-2">
+                  <code className="bg-slate-700 px-2 py-1 rounded text-sm text-gray-100">
+                    {tag}
+                  </code>
+                  <button
+                    onClick={() => handleCopy(tag)}
+                    className="p-2 hover:text-blue-400 transition text-gray-200"
+                  >
+                    {copied === tag ? <Check size={18} /> : <Copy size={18} />}
+                  </button>
+                </div>
+              </div>
+            );
+          })}
+        </div>
+      )}
+
+      {/* Share Buttons */}
+      <div className="flex justify-center gap-4 mt-8">
+        <button
+          onClick={() => handleShare("twitter")}
+          className="flex items-center gap-2 px-4 py-2 bg-[#1DA1F2] hover:bg-[#1a91da] text-white rounded-full shadow transition"
         >
-          <Image
-            aria-hidden
-            src="/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
-          />
-          Learn
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
+          <Twitter size={18} /> Share on X
+        </button>
+        <button
+          onClick={() => handleShare("discord")}
+          className="flex items-center gap-2 px-4 py-2 bg-[#5865F2] hover:bg-[#4752C4] text-white rounded-full shadow transition"
         >
-          <Image
-            aria-hidden
-            src="/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
-      </footer>
-    </div>
+          <Share2 size={18} /> Share on Discord
+        </button>
+      </div>
+
+      {/* Ad Section */}
+      <div className="mt-12">
+        <AdBanner slot="1234567890" />
+      </div>
+
+      {/* Copy confirmation */}
+      {copied && (
+        <div className="fixed bottom-6 left-1/2 -translate-x-1/2 bg-blue-600 text-white px-4 py-2 rounded-full shadow-lg">
+          Copied to clipboard!
+        </div>
+      )}
+    </main>
   );
 }
