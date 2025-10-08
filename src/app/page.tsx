@@ -1,12 +1,34 @@
 "use client";
 
 import { Check, Copy, Share2, Twitter } from "lucide-react";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import AdBanner from "@/components/AdBanner";
 
 export default function Page() {
   const [timestamp, setTimestamp] = useState<number | null>(null);
   const [copied, setCopied] = useState<string | null>(null);
+  const [showTopAd, setShowTopAd] = useState(false);
+  const heroRef = useRef<HTMLDivElement | null>(null);
+
+  useEffect(() => {
+    const heroEl = heroRef.current;
+    if (!heroEl) return;
+    const io = new IntersectionObserver(
+      (entries) => {
+        for (const entry of entries) {
+          // When hero is mostly out of view, allow top ad
+          if (!entry.isIntersecting) {
+            setShowTopAd(true);
+            io.disconnect();
+            break;
+          }
+        }
+      },
+      { root: null, rootMargin: "0px", threshold: 0.5 },
+    );
+    io.observe(heroEl);
+    return () => io.disconnect();
+  }, []);
 
   useEffect(() => {
     const jsonLd = {
@@ -134,19 +156,30 @@ export default function Page() {
 
   return (
     <main className="w-full max-w-3xl mx-auto px-4 py-10">
-      <div className="text-center mb-10">
+      {/* Header */}
+      <div ref={heroRef} className="text-center mb-10">
         <h1 className="text-3xl font-bold mb-2 bg-gradient-to-r from-blue-500 to-purple-600 text-transparent bg-clip-text">
           Discord Time to Unix Converter
         </h1>
         <p className="text-gray-600">
           Convert any date/time to all Discord timestamp formats — with live
-          previews.
+          previews and instant copy features.
         </p>
       </div>
 
-      {/* Input Section */}
+      {/* Top Ad: only after hero is mostly out of view */}
+      {showTopAd && (
+        <div className="my-6">
+          <AdBanner slot="1234567890" />
+        </div>
+      )}
+
+      {/* Main Input Section */}
       <div className="bg-slate-800/80 backdrop-blur-lg rounded-2xl shadow-lg p-6 mb-8 border border-slate-700/60">
-        <label htmlFor="dt" className="block text-sm font-medium mb-2 text-slate-200">
+        <label
+          htmlFor="dt"
+          className="block text-sm font-medium mb-2 text-slate-200"
+        >
           Select Date & Time:
         </label>
         <input
@@ -162,6 +195,7 @@ export default function Page() {
         )}
       </div>
 
+      {/* Ad shown only after user generates a timestamp */}
       {timestamp && (
         <div className="mt-6 mb-8">
           <AdBanner slot="1234567890" />
@@ -203,6 +237,30 @@ export default function Page() {
         </div>
       )}
 
+      {/* Educational / About Section (SEO + AdSense content) */}
+      <section className="mt-12 text-gray-300 leading-relaxed space-y-4">
+        <h2 className="text-xl font-semibold text-gray-100">
+          About Discord Timestamps
+        </h2>
+        <p>
+          Discord supports a special timestamp format using Unix time, allowing
+          bots and users to display dynamic times that adapt to each viewer’s
+          timezone. For example, writing <code>&lt;t:1739059200:F&gt;</code>{" "}
+          shows a localized date like <em>Sunday, February 9, 2025 10:00 AM</em>{" "}
+          depending on who views it.
+        </p>
+        <p>
+          This converter helps you easily generate all seven Discord timestamp
+          formats in real time. Simply choose your desired date and time, then
+          copy the format tag you need — perfect for event scheduling, bot
+          development, and announcements.
+        </p>
+        <p>
+          Created by the community for convenience. Share it with your Discord
+          friends or tweet about it using the buttons below!
+        </p>
+      </section>
+
       {/* Share Buttons */}
       <div className="flex justify-center gap-4 mt-8">
         <button
@@ -221,12 +279,14 @@ export default function Page() {
         </button>
       </div>
 
-      {/* Ad Section */}
-      <div className="mt-12">
-        <AdBanner slot="1234567890" />
-      </div>
+      {/* Bottom Ad (after all content) */}
+      {timestamp && (
+        <div className="mt-12">
+          <AdBanner slot="1234567890" />
+        </div>
+      )}
 
-      {/* Copy confirmation */}
+      {/* Copy confirmation toast */}
       {copied && (
         <div className="fixed bottom-6 left-1/2 -translate-x-1/2 bg-blue-600 text-white px-4 py-2 rounded-full shadow-lg">
           Copied to clipboard!
