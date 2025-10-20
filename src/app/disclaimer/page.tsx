@@ -306,6 +306,10 @@ export default function DisclaimerPage() {
                 use this website.
               </p>
             </section>
+          </div>
+        </div>
+        </div>
       </section>
+    </main>
   );
 }
