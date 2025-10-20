@@ -32,11 +32,11 @@ export async function generateMetadata({
   };
 }
 
-export default async function BlogPostPage({
-  params,
-}: {
+interface BlogPostPageProps {
   params: { slug: string };
-}) {
+}
+
+export default async function BlogPostPage({ params }: BlogPostPageProps) {
   const post = blogPosts.find((p) => p.slug === params.slug);
 
   if (!post) {
