@@ -308,8 +308,8 @@ export default function DisclaimerPage() {
             </section>
           </div>
         </div>
-        </div>
-      </section>
+      </div>
+    </section>
     </main>
   );
 }
