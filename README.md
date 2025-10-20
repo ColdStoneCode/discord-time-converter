@@ -1,6 +1,7 @@
 # Discord Time to Unix Converter
 
-Convert any date/time to Discord’s Unix timestamp formats with live previews.
+## Overview
+A comprehensive Next.js website that converts dates and times to Discord timestamp formats. Originally a simple converter tool, the site has been expanded into a full-featured, AdSense-compliant multi-page website with rich content including blog posts, guides, legal pages, and complete SEO optimization.
 
 ## Features
 - Dark, Discord-inspired UI with gradient background
@@ -10,44 +11,64 @@ Convert any date/time to Discord’s Unix timestamp formats with live previews.
 - Share links for X (Twitter) and Discord
 - Google AdSense placeholders (dev) and production ad support
 
-## Tech Stack
-- Next.js App Router (TypeScript)
-- Tailwind CSS (custom layers, tokens, animations)
-- Lucide Icons
-- PostCSS with `@tailwindcss/postcss`
+### Technology Stack
+- **Frontend**: React 19.1.0, Next.js 15.5.4
+- **Styling**: Tailwind CSS 4, PostCSS, Autoprefixer
+- **UI Components**: Lucide React icons
+- **Analytics**: Vercel Analytics and Speed Insights
+- **Monetization**: Google AdSense integration
+- **Type Safety**: TypeScript 5
+- **Code Quality**: Biome for linting and formatting
+
+### Project Structure
+```
+├── src/
+│   ├── app/                    # Next.js app directory
+│   │   ├── layout.tsx          # Root layout with Header/Footer
+│   │   ├── page.tsx            # Home page
+│   │   ├── converter/          # Timestamp converter tool
+│   │   ├── blog/               # Blog section
+│   │   │   ├── page.tsx        # Blog listing
+│   │   │   └── [slug]/         # Individual blog posts
+│   │   ├── guides/             # Guides section
+│   │   │   ├── page.tsx        # Guides listing
+│   │   │   └── [slug]/         # Individual guide articles
+│   │   ├── about/              # About page
+│   │   ├── contact/            # Contact page
+│   │   ├── privacy/            # Privacy Policy
+│   │   ├── terms/              # Terms of Service
+│   │   ├── disclaimer/         # Disclaimer
+│   │   ├── globals.css         # Global styles
+│   │   ├── robots.ts           # SEO robots configuration
+│   │   └── sitemap.ts          # Dynamic sitemap generation
+│   ├── components/
+│   │   ├── Header.tsx          # Site header with navigation
+│   │   ├── Footer.tsx          # Site footer with links
+│   │   └── AdBanner.tsx        # AdSense ad component
+│   └── data/
+│       ├── blogPosts.ts        # Blog posts data (5 posts)
+│       └── guides.ts           # Guides data (3 guides)
+├── public/                     # Static assets
+└── package.json               # Dependencies and scripts
+```
 
 ## Getting Started
-1. Install dependencies:
-```bash
-pnpm install
-```
-2. Run the dev server:
-```bash
-pnpm dev
-```
-Open http://localhost:3000
+- `pnpm run dev` - Start development server on port 5000
+- `pnpm run build` - Build for production
+- `pnpm run start` - Start production server on port 5000
+- `pnpm run lint` - Run Biome linter
+- `pnpm run format` - Format code with Biome
 
-## Project Structure
-- `src/app/` – App Router pages and layout
-  - `layout.tsx` – global layout and styles import
-  - `page.tsx` – converter UI and logic
-  - `globals.css` – theme tokens, base layers, animations
-- `src/components/AdBanner.tsx` – AdSense integration (dev placeholder)
-- `tailwind.config.js` – Tailwind config (darkMode: class)
-- `postcss.config.mjs` – PostCSS config
 
-## Scripts
-```bash
-pnpm dev        # start dev server
-pnpm build      # production build
-pnpm start      # start production server
-pnpm lint       # run lints
-```
 
-## Ads
-- In development, a styled placeholder renders.
-- In production, AdSense script is loaded and `<ins class="adsbygoogle" />` is used.
-- Customize the slot id in `src/app/page.tsx` and `src/components/AdBanner.tsx`.
+### SEO & Analytics
+- **Metadata**: Comprehensive meta tags on all pages
+- **OpenGraph**: Social sharing optimization
+- **Twitter Cards**: Twitter-specific sharing tags
+- **Sitemap**: Dynamic sitemap with all pages, blog posts, and guides
+- **Robots.txt**: Proper crawling configuration
+- **Canonical URLs**: Page-specific canonical links (fixed for proper SEO)
+- **Analytics**: Vercel Analytics and Speed Insights integration
 
 ## Deployment
 - Optimized for Vercel, but any Node host works.

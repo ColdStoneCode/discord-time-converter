@@ -1,7 +1,9 @@
 import "./globals.css";
-import type { Metadata } from "next";
 import { Analytics } from "@vercel/analytics/react";
 import { SpeedInsights } from "@vercel/speed-insights/next";
+import type { Metadata } from "next";
+import Footer from "@/components/Footer";
+import Header from "@/components/Header";
 
 const siteUrl = "https://discord-time-converter.vercel.app/";
 
@@ -11,7 +13,8 @@ export const metadata: Metadata = {
     default: "Discord Time to Unix Converter",
     template: "%s | Discord Time Converter",
   },
-  description: "Convert any date/time to Discord’s Unix timestamp format instantly.",
+  description:
+    "Convert any date/time to Discord’s Unix timestamp format instantly.",
   keywords: [
     "discord timestamp",
     "unix time",
@@ -20,9 +23,6 @@ export const metadata: Metadata = {
     "epoch",
     "relative time",
   ],
-  alternates: {
-    canonical: siteUrl,
-  },
   openGraph: {
     type: "website",
     url: siteUrl,
@@ -66,8 +66,10 @@ export default function RootLayout({
           crossOrigin="anonymous"
         ></script>
       </head>
-      <body className="antialiased font-sans transition-colors duration-500 min-h-screen flex flex-col">
-        {children}
+      <body className="antialiased font-sans">
+        <Header />
+        <div className="flex-1 bg-slate-950">{children}</div>
+        <Footer />
         <Analytics />
         <SpeedInsights />
       </body>

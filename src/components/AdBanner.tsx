@@ -17,7 +17,8 @@ export default function AdBanner({ slot }: AdBannerProps) {
   const [ready, setReady] = useState(false);
 
   useEffect(() => {
-    if (typeof window === "undefined" || process.env.NODE_ENV !== "production") return;
+    if (typeof window === "undefined" || process.env.NODE_ENV !== "production")
+      return;
 
     const el = containerRef.current;
     if (!el) return;
@@ -28,7 +29,10 @@ export default function AdBanner({ slot }: AdBannerProps) {
       const checkScript = setInterval(() => {
         if (typeof window.adsbygoogle !== "undefined") {
           try {
-            (window.adsbygoogle = window.adsbygoogle || []).push({});
+            if (!window.adsbygoogle) {
+              window.adsbygoogle = [];
+            }
+            window.adsbygoogle.push({});
             initializedRef.current = true;
             setReady(true);
           } catch (err) {
@@ -63,7 +67,7 @@ export default function AdBanner({ slot }: AdBannerProps) {
   // Show mock banner in development
   if (process.env.NODE_ENV !== "production") {
     return (
-      <div className="w-full h-32 flex items-center justify-center bg-gradient-to-r from-slate-200 to-slate-300 rounded-xl text-slate-500 text-sm italic shadow-inner">
+      <div className="w-full h-32 flex items-center justify-center bg-transparent rounded-xl text-slate-400 text-sm italic">
         [Ad Placeholder]
       </div>
     );
@@ -71,7 +75,7 @@ export default function AdBanner({ slot }: AdBannerProps) {
 
   // Real AdSense slot (with reserved height to prevent CLS)
   return (
-    <div
+    <section
       ref={containerRef}
       className="w-full h-32 rounded-xl overflow-hidden flex items-center justify-center relative"
       style={{ minHeight: "8rem" }}
@@ -89,6 +93,6 @@ export default function AdBanner({ slot }: AdBannerProps) {
         data-ad-format="auto"
         data-full-width-responsive="true"
       />
-    </div>
+    </section>
   );
 }
