@@ -8,9 +8,9 @@ import AdBanner from "@/components/AdBanner";
 import { guides } from "@/data/guides";
 
 type Props = {
-  params: {
+  params: Promise<{
     slug: string;
-  };
+  }>;
 };
 
 export async function generateStaticParams() {
@@ -19,8 +19,8 @@ export async function generateStaticParams() {
   }));
 }
 
-export function generateMetadata({ params }: Props): Metadata {
-  const slug = params.slug;
+export async function generateMetadata({ params }: Props): Promise<Metadata> {
+  const { slug } = await params;
   const guide = guides.find((g) => g.slug === slug);
 
   if (!guide) {
@@ -36,8 +36,8 @@ export function generateMetadata({ params }: Props): Metadata {
   };
 }
 
-export default function GuidePage({ params }: Props) {
-  const slug = params.slug;
+export default async function GuidePage({ params }: Props) {
+  const { slug } = await params;
   const guide = guides.find((g) => g.slug === slug);
 
   if (!guide) {
